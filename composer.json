@@ -6,8 +6,10 @@
     "autoload": {
         "psr-4": {
             "Framework\\": "src/Framework",
-            "App\\": "src/App",
-            "App\\Controllers\\": "src/App/Controllers"
-        }
+            "App\\": "src/App"
+        },
+    "files": [
+            "src/App/Config/Routes.php"
+        ]
     }
 }
