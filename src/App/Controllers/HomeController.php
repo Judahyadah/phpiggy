@@ -5,19 +5,20 @@ declare(strict_types=1);
 namespace App\Controllers;
 
 use Framework\TemplatEngine;
-use App\Config\Paths;
+use App\Services\TransactionService;
 
 class HomeController
 {
-    private TemplatEngine $view;
-
-    public function __construct()
+    public function __construct(private TemplatEngine $view, private TransactionService $transactionService)
     {
-        $this->view = new TemplatEngine(Paths::VIEWS);
     }
 
     public function home()
     {
-        echo $this->view->render("/index.php", ['title' =>'Home',]);
+        $transactions = $this->transactionService->getUserTransactions();
+
+        echo $this->view->render("/index.php", [
+            'transactions' => $transactions
+        ]);
     }
 }

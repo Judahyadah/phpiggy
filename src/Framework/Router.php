@@ -7,6 +7,7 @@ namespace Framework;
 class Router
 {
     private array $routes = [];
+    private array $middlewares = [];
 
     public function add(string $method, string $path, array $controller)
     {
@@ -16,6 +17,7 @@ class Router
             'path' => $path,
             'method' => strtoupper($method),
             'controller' => $controller,
+            'middlewares' => []
         ];
     }
 
@@ -27,7 +29,7 @@ class Router
         return $path;
     }
 
-    public function dispatch(string $path, string $method)
+    public function dispatch(string $path, string $method, Container $container = null)
     {
         $path = $this->normalizePath($path);
         $method = strtoupper($method);
@@ -38,9 +40,31 @@ class Router
             }
             [$class, $function] = $route['controller'];
 
-            $controllerInstance = new $class;
+            $controllerInstance = $container ? $container->resolve($class) : new $class;
 
-            $controllerInstance->{$function}();
+            $action = fn() => $controllerInstance->{$function}();
+
+            $allMiddleware = [...$route['middlewares'], ...$this->middlewares];
+            // $allMiddleware = array_merge([...$route['middleware'], ...$this->middlewares]);
+
+            foreach($allMiddleware as $middleware){
+                $middlewareInstance = $container ? $container->resolve($middleware) : new $middleware;
+                $action = fn() => $middlewareInstance->process($action);
+            }
+
+            $action();
+            return;
         }
+    }
+
+    public function addMiddleware(string $middleware)
+    {
+        $this->middlewares[] = $middleware;
+    }
+
+    public function addRouteMiddleware(string $middleware) 
+    {
+        $lastRouteKey = array_key_last($this->routes);
+        $this->routes[$lastRouteKey]['middlewares'][] = $middleware;
     }
 }

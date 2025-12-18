@@ -9,11 +9,8 @@ use App\Config\Paths;
 
 class AboutController
 {
-    private TemplatEngine $view;
-
-    public function __construct()
+    public function __construct(private TemplatEngine $view)
     {
-        $this->view = new TemplatEngine(Paths::VIEWS);
     }
 
     public function about()
