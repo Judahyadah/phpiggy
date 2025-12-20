@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace App\Middleware;
 
 use Framework\Contracts\MiddlewareInterface;
-use Framework\TemplatEngine;
+use Framework\TemplateEngine;
 
 class CsrfTokenMiddleware implements MiddlewareInterface
 {
-    public function __construct(private TemplatEngine $view)
-    {
-    }
+    public function __construct(private TemplateEngine $view) {}
 
     public function process(callable $next)
     {

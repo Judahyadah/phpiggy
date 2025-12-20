@@ -4,15 +4,13 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-use Framework\TemplatEngine;
+use Framework\TemplateEngine;
 use App\Config\Paths;
 use App\Services\{ValidatorService, UserService};
 
 class AuthController
 {
-    public function __construct(private TemplatEngine $view, private ValidatorService $validatorService, private UserService $userService)
-    {
-    }
+    public function __construct(private TemplateEngine $view, private ValidatorService $validatorService, private UserService $userService) {}
 
     public function registerView()
     {
@@ -31,7 +29,7 @@ class AuthController
         redirectTo('/');
     }
 
-        public function loginView()
+    public function loginView()
     {
         echo $this->view->render("/login.php", [
             'title' => 'Login'
